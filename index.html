@@ -2,31 +2,100 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>多源音乐播放器</title>
+<title>音乐播放器</title>
+
 <style>
-body { font-family: Arial; padding: 20px; background:#f5f5f5; }
-input { width: 70%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;}
-button { padding: 10px 15px; border:none; border-radius:8px; background:#ff4d4f; color:white;}
-li { padding:10px; margin:5px 0; background:white; border-radius:8px; cursor:pointer;}
-li:hover { background:#eee; }
+body {
+  font-family: -apple-system;
+  background: #f2f3f5;
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+input {
+  width: 120px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  background: #ff4d4f;
+  color: white;
+  cursor: pointer;
+}
+
+.card {
+  background: white;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.song-info {
+  cursor: pointer;
+}
+
+.song-name {
+  font-weight: bold;
+}
+
+.artist {
+  font-size: 12px;
+  color: gray;
+}
+
+.star {
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.active {
+  color: gold;
+}
+
+#player {
+  margin-top: 20px;
+  width: 100%;
+}
 </style>
+
 </head>
 
 <body>
 
-<h2>🎧 多源音乐播放器</h2>
+<h2>🎧 音乐播放器</h2>
 
-<input id="keyword" placeholder="输入歌曲名">
-<button onclick="search()">搜索</button>
+<div class="top-bar">
+  <input id="keyword" placeholder="歌曲">
+  <button onclick="search()">搜索</button>
+  <button onclick="showFavorites()">❤️收藏</button>
+</div>
 
-<ul id="list"></ul>
+<div id="list"></div>
 
-<audio id="player" controls style="width:100%; margin-top:20px;"></audio>
+<audio id="player" controls></audio>
 
 <script>
 const sources = [
   {
-    name: "网易源",
+    name: "网易",
     search: (k) => `https://api.imjad.cn/cloudmusic/?type=search&s=${k}`,
     song: (id) => `https://api.imjad.cn/cloudmusic/?type=song&id=${id}`,
     parseSearch: (data) => data.result.songs.map(s => ({
@@ -37,7 +106,7 @@ const sources = [
     parseUrl: (data) => data.data[0].url
   },
   {
-    name: "备用源",
+    name: "备用",
     search: (k) => `https://music-api.gdstudio.xyz/api.php?types=search&source=netease&name=${k}`,
     song: (id) => `https://music-api.gdstudio.xyz/api.php?types=url&source=netease&id=${id}`,
     parseSearch: (data) => data.map(s => ({
@@ -49,62 +118,133 @@ const sources = [
   }
 ];
 
-async function search() {
-  const k = document.getElementById("keyword").value;
-  const list = document.getElementById("list");
-  list.innerHTML = "搜索中...";
-
-  for (let source of sources) {
-    try {
-      const res = await fetch(source.search(k));
-      const data = await res.json();
-      const songs = source.parseSearch(data);
-
-      if (songs && songs.length) {
-        renderList(songs, source);
-        return;
-      }
-    } catch(e) {
-      console.log(source.name + "失败");
-    }
-  }
-
-  list.innerHTML = "没有找到歌曲";
+// 收藏缓存
+function getFav() {
+  return JSON.parse(localStorage.getItem("fav") || "[]");
 }
 
-function renderList(songs, source) {
-  const list = document.getElementById("list");
-  list.innerHTML = "";
+function saveFav(list) {
+  localStorage.setItem("fav", JSON.stringify(list));
+}
 
-  songs.slice(0, 20).forEach(song => {
-    const li = document.createElement("li");
-    li.innerText = `${song.name} - ${song.artist} (${source.name})`;
+function toggleFav(song) {
+  let fav = getFav();
+  const index = fav.findIndex(s => s.id === song.id);
 
-    li.onclick = () => play(song.id);
+  if (index > -1) {
+    fav.splice(index, 1);
+  } else {
+    fav.push(song);
+  }
 
-    list.appendChild(li);
+  saveFav(fav);
+  renderList(currentSongs);
+}
+
+// 判断是否收藏
+function isFav(id) {
+  return getFav().some(s => s.id === id);
+}
+
+// 排序优化（优先原唱）
+function sortSongs(list, keyword) {
+  return list.sort((a, b) => {
+    const score = (s) => {
+      let val = 0;
+      if (s.name.includes(keyword)) val += 10;
+      if (s.artist.includes(keyword)) val += 5;
+      if (s.name === keyword) val += 20;
+      return val;
+    };
+    return score(b) - score(a);
   });
 }
 
-async function play(id) {
-  const player = document.getElementById("player");
+let currentSongs = [];
 
-  for (let source of sources) {
+// 搜索
+async function search() {
+  const k = document.getElementById("keyword").value;
+  const listEl = document.getElementById("list");
+  listEl.innerHTML = "搜索中...";
+
+  for (let s of sources) {
     try {
-      const res = await fetch(source.song(id));
+      const res = await fetch(s.search(k));
       const data = await res.json();
-      const url = source.parseUrl(data);
+      let songs = s.parseSearch(data);
 
-      if (url) {
-        player.src = url;
-        player.play();
-        console.log("使用源:", source.name);
+      if (songs.length) {
+        songs = sortSongs(songs, k);
+        currentSongs = songs;
+        renderList(songs);
         return;
       }
     } catch(e) {}
   }
 
-  alert("所有音源都无法播放 😢");
+  listEl.innerHTML = "没有结果";
+}
+
+// 渲染列表
+function renderList(songs) {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  songs.slice(0, 20).forEach(song => {
+    const div = document.createElement("div");
+    div.className = "card";
+
+    const left = document.createElement("div");
+    left.className = "song-info";
+    left.innerHTML = `
+      <div class="song-name">${song.name}</div>
+      <div class="artist">${song.artist}</div>
+    `;
+
+    left.onclick = () => play(song.id);
+
+    const star = document.createElement("div");
+    star.className = "star " + (isFav(song.id) ? "active" : "");
+    star.innerText = "★";
+    star.onclick = (e) => {
+      e.stopPropagation();
+      toggleFav(song);
+    };
+
+    div.appendChild(left);
+    div.appendChild(star);
+
+    list.appendChild(div);
+  });
+}
+
+// 播放
+async function play(id) {
+  const player = document.getElementById("player");
+
+  for (let s of sources) {
+    try {
+      const res = await fetch(s.song(id));
+      const data = await res.json();
+      const url = s.parseUrl(data);
+
+      if (url) {
+        player.src = url;
+        player.play();
+        return;
+      }
+    } catch(e) {}
+  }
+
+  alert("播放失败");
+}
+
+// 收藏页
+function showFavorites() {
+  const fav = getFav();
+  currentSongs = fav;
+  renderList(fav);
 }
 </script>
 
