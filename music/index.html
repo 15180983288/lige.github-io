@@ -189,38 +189,170 @@
     padding: 8px 0 100px;
   }
 
-  /* ===== Loading 动画 ===== */
-  .loading-box {
+  /* ===== 错误提示（炫酷大字） ===== */
+  .error-box {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 80px 20px;
+    padding: 70px 24px;
+    animation: fadeInUp 0.4s ease;
   }
 
-  .loading-spinner {
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .error-icon-wrap {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fff0f0, #ffe8e8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 32px rgba(255,77,79,0.12);
+  }
+
+  .error-icon-wrap svg {
     width: 44px;
     height: 44px;
-    border: 3px solid rgba(49, 194, 124, 0.15);
-    border-top-color: var(--primary);
-    border-radius: 50%;
-    animation: spin-loader 0.8s linear infinite;
+    color: #ff4d4f;
   }
 
-  @keyframes spin-loader {
-    to { transform: rotate(360deg); }
+  .error-title {
+    font-size: 26px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ff4d4f, #ff7a7a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
   }
 
-  .loading-text {
-    margin-top: 16px;
-    font-size: 14px;
+  .error-desc {
+    font-size: 17px;
     color: var(--text-sub);
-    animation: pulse 1.5s ease-in-out infinite;
+    line-height: 1.6;
   }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
+  .error-retry {
+    margin-top: 32px;
+    padding: 14px 40px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(49, 194, 124, 0.35);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .error-retry:active {
+    transform: scale(0.95);
+    box-shadow: 0 3px 12px rgba(49, 194, 124, 0.3);
+  }
+
+  /* ===== 搜索进度提示 ===== */
+  .search-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 70px 24px;
+    animation: fadeInUp 0.4s ease;
+  }
+
+  .search-progress-dots {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .search-progress-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ddd;
+    transition: all 0.3s;
+  }
+
+  .search-progress-dot.active {
+    background: var(--primary);
+    transform: scale(1.3);
+    box-shadow: 0 0 12px rgba(49,194,124,0.4);
+  }
+
+  .search-progress-dot.done {
+    background: var(--primary);
+    opacity: 0.5;
+  }
+
+  .search-progress-dot.fail {
+    background: #ff4d4f;
+    opacity: 0.5;
+  }
+
+  .search-progress-text {
+    font-size: 16px;
+    color: var(--text-sub);
+    font-weight: 500;
+  }
+
+  .search-progress-source {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-top: 8px;
+  }
+
+  /* 失败次数提示 */
+  .fail-count-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 12px;
+    background: rgba(255,77,79,0.1);
+    color: #ff4d4f;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 16px;
+  }
+
+  /* 多按钮容器 */
+  .error-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .error-btn-secondary {
+    padding: 14px 28px;
+    border-radius: 28px;
+    background: rgba(0,0,0,0.05);
+    color: var(--text-sub);
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .error-btn-secondary:active {
+    transform: scale(0.95);
+    background: rgba(0,0,0,0.08);
   }
 
   .list-header {
@@ -351,16 +483,27 @@
   /* ===== 状态提示 ===== */
   .status-msg {
     text-align: center;
-    padding: 60px 20px;
+    padding: 80px 24px;
     color: var(--text-sub);
-    font-size: 14px;
   }
 
   .status-msg .icon {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 16px;
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 20px;
     color: var(--text-third);
+  }
+
+  .status-msg .title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 8px;
+  }
+
+  .status-msg .desc {
+    font-size: 15px;
+    color: var(--text-sub);
   }
 
   /* ===== 底部迷你播放栏 ===== */
@@ -685,34 +828,45 @@
     margin-right: 4px;
   }
 
-  /* 歌词区 */
+  /* 歌词区 — 可滚动 */
   .lyrics-area {
     flex: 1;
-    text-align: center;
     overflow: hidden;
     position: relative;
-    padding: 20px 0;
-    mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
-    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
   }
 
   .lyrics-area .lyric-text {
-    font-size: 15px;
-    color: rgba(255,255,255,0.45);
-    line-height: 2.2;
-    transition: all 0.3s;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    font-size: 18px;
+    color: rgba(255,255,255,0.32);
+    line-height: 2.8;
+    text-align: center;
+    padding: 40vh 28px;
+    transition: color 0.3s;
   }
 
+  .lyrics-area .lyric-text::-webkit-scrollbar { display: none; }
+
   .lyrics-area .lyric-text .line {
-    padding: 4px 0;
-    transition: all 0.3s;
+    padding: 6px 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(0.92);
+    opacity: 0.7;
   }
 
   .lyrics-area .lyric-text .line.active {
     color: #fff;
-    font-size: 17px;
-    font-weight: 600;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    font-size: 22px;
+    font-weight: 700;
+    transform: scale(1.06);
+    opacity: 1;
+    text-shadow: 0 0 24px rgba(255,255,255,0.5), 0 2px 12px rgba(0,0,0,0.4);
   }
 
   /* 分页指示器 */
@@ -1015,9 +1169,51 @@
 
 <script>
 // ===== 接口 =====
+// ===== 多平台音乐源（每个源是独立闭环：搜索→播放→歌词） =====
+// 工厂：生成 gdstudio 平台源
+function makeGdstudioSource(name, platform) {
+  return {
+    name: name,
+    platform: platform,
+    search: (k) => ({
+      url: "https://music-api.gdstudio.xyz/api.php",
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `types=search&source=${platform}&name=${encodeURIComponent(k)}`
+    }),
+    song: (id) => ({
+      url: "https://music-api.gdstudio.xyz/api.php",
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `types=url&source=${platform}&id=${id}`
+    }),
+    lyric: (id) => ({
+      url: "https://music-api.gdstudio.xyz/api.php",
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `types=lyric&source=${platform}&id=${id}`
+    }),
+    parseSearch: (data) => {
+      if (!Array.isArray(data)) return [];
+      return data.map(s => ({
+        id: s.id,
+        name: s.name || '未知',
+        artist: Array.isArray(s.artist) ? s.artist.join(' / ') : (s.artist || '未知'),
+        cover: ''
+      })).filter(s => s.id && s.name);
+    },
+    parseUrl: (data) => (data && data.url) ? data.url : null,
+    parseLyric: (data) => (data && data.lyric) ? data.lyric : "暂无歌词"
+  };
+}
+
 const sources = [
+  makeGdstudioSource("网易云", "netease"),
+  makeGdstudioSource("JOOX", "joox"),
+  makeGdstudioSource("酷我", "kuwo"),
   {
-    name: "网易",
+    name: "网易备用",
+    platform: "netease",
     search: (k) => `https://api.imjad.cn/cloudmusic/?type=search&s=${encodeURIComponent(k)}`,
     song: (id) => `https://api.imjad.cn/cloudmusic/?type=song&id=${id}&br=320`,
     lyric: (id) => `https://api.imjad.cn/cloudmusic/?type=lyric&id=${id}`,
@@ -1032,38 +1228,6 @@ const sources = [
     },
     parseUrl: (data) => (data && data.data && data.data[0]) ? data.data[0].url : null,
     parseLyric: (data) => (data && data.lrc) ? data.lrc.lyric : "暂无歌词"
-  },
-  {
-    name: "备用A",
-    search: (k) => ({
-      url: "https://music-api.gdstudio.xyz/api.php",
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `types=search&source=netease&name=${encodeURIComponent(k)}`
-    }),
-    song: (id) => ({
-      url: "https://music-api.gdstudio.xyz/api.php",
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `types=url&source=netease&id=${id}`
-    }),
-    lyric: (id) => ({
-      url: "https://music-api.gdstudio.xyz/api.php",
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `types=lyric&source=netease&id=${id}`
-    }),
-    parseSearch: (data) => {
-      if (!Array.isArray(data)) return [];
-      return data.map(s => ({
-        id: s.id,
-        name: s.name || '未知',
-        artist: Array.isArray(s.artist) ? s.artist.join(' / ') : (s.artist || '未知'),
-        cover: s.pic || ''
-      })).filter(s => s.id && s.name);
-    },
-    parseUrl: (data) => (data && data.url) ? data.url : null,
-    parseLyric: (data) => (data && data.lyric) ? data.lyric : "暂无歌词"
   }
 ];
 
@@ -1108,7 +1272,7 @@ function switchTab(el, tab) {
 
 // 带超时的 fetch，支持 POST/GET
 function fetchWithTimeout(req, ms = 8000) {
-  let url, options = {};
+  let url, options = { cache: 'no-store' };  // 🔥 强制不缓存，解决 API 失败被浏览器缓存的问题
   if (typeof req === 'string') {
     url = req;
   } else {
@@ -1123,26 +1287,72 @@ function fetchWithTimeout(req, ms = 8000) {
   ]);
 }
 
-// ===== 搜索 =====
+// ===== 搜索（多源实时进度 + 失败次数管理） =====
 let isLoading = false;
+let lastSearchKeyword = '';
+
+function getFailCount(k) {
+  try {
+    const data = JSON.parse(sessionStorage.getItem('searchFail') || '{}');
+    return data[k] || 0;
+  } catch(e) { return 0; }
+}
+
+function incFailCount(k) {
+  try {
+    const data = JSON.parse(sessionStorage.getItem('searchFail') || '{}');
+    data[k] = (data[k] || 0) + 1;
+    sessionStorage.setItem('searchFail', JSON.stringify(data));
+  } catch(e) {}
+}
+
+function clearFailCount(k) {
+  try {
+    const data = JSON.parse(sessionStorage.getItem('searchFail') || '{}');
+    delete data[k];
+    sessionStorage.setItem('searchFail', JSON.stringify(data));
+  } catch(e) {}
+}
+
+// 渲染搜索进度 UI
+function renderSearchProgress(sources, currentIndex, results) {
+  const dotsHtml = sources.map((s, i) => {
+    let cls = 'search-progress-dot';
+    if (i < currentIndex) cls += results[i] ? ' done' : ' fail';
+    if (i === currentIndex) cls += ' active';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+
+  const currentName = currentIndex < sources.length ? sources[currentIndex].name : '';
+  return `
+    <div class="search-progress">
+      <div class="search-progress-dots">${dotsHtml}</div>
+      <div class="search-progress-text">正在搜索「${lastSearchKeyword}」</div>
+      <div class="search-progress-source">${currentName}...</div>
+    </div>`;
+}
+
 async function search() {
   if (isLoading) return;
   const k = document.getElementById("keyword").value.trim();
   if (!k) return;
 
+  // 关键词变化时重置失败计数
+  if (k !== lastSearchKeyword) {
+    lastSearchKeyword = k;
+  }
+
   isLoading = true;
   const listEl = document.getElementById("list");
+  const searchBtn = document.querySelector('.search-btn');
+  if (searchBtn) searchBtn.style.opacity = '0.6';
 
-  // 显示 loading 动画
-  listEl.innerHTML = `
-    <div class="loading-box">
-      <div class="loading-spinner"></div>
-      <div class="loading-text">正在搜索「${k}」...</div>
-    </div>`;
+  const results = [];
+  for (let i = 0; i < sources.length; i++) {
+    const s = sources[i];
+    // 实时更新进度
+    listEl.innerHTML = renderSearchProgress(sources, i, results);
 
-  let errors = [];
-
-  for (let s of sources) {
     try {
       const res = await fetchWithTimeout(s.search(k));
       const data = await res.json();
@@ -1151,24 +1361,95 @@ async function search() {
         currentSongs = songs;
         currentSource = s;
         renderList(songs);
+        clearFailCount(k);
+        try { sessionStorage.removeItem('pendingSearch'); } catch(e) {}
         isLoading = false;
+        if (searchBtn) searchBtn.style.opacity = '1';
         return;
-      } else {
-        errors.push(`${s.name}: 返回空`);
       }
+      results[i] = false;
     } catch(e) {
-      errors.push(`${s.name}: ${e.message}`);
+      results[i] = false;
     }
   }
 
-  // 所有源都失败
+  // 全部失败
+  incFailCount(k);
+  const failCount = getFailCount(k);
+  try { sessionStorage.setItem('pendingSearch', k); } catch(e) {}
+
+  let actionsHtml = '';
+  let descText = '';
+
+  if (failCount <= 2) {
+    // 第 1-2 次失败：换源重试 + 强制刷新
+    descText = failCount === 1
+      ? '所有音乐源均未响应，可能网络波动'
+      : '再次搜索失败，建议强制刷新页面';
+    actionsHtml = `
+      <button class="error-retry" onclick="search()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        换源重试
+      </button>
+      <button class="error-btn-secondary" onclick="forceReloadAndSearch()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+        强制刷新
+      </button>`;
+  } else {
+    // 第 3 次以上：强制刷新 + 清空重试
+    descText = '已连续失败 ' + failCount + ' 次，建议更换关键词或稍后再试';
+    actionsHtml = `
+      <button class="error-retry" onclick="forceReloadAndSearch()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        强制刷新并搜索
+      </button>
+      <button class="error-btn-secondary" onclick="clearAndFocus()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        换关键词
+      </button>`;
+  }
+
   listEl.innerHTML = `
-    <div class="status-msg">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <div>搜索失败，请稍后重试</div>
-      <div style="font-size:12px;margin-top:8px;color:var(--text-third)">${errors.join('；')}</div>
+    <div class="error-box">
+      <div class="error-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="error-title">搜索失败</div>
+      <div class="error-desc">${descText}</div>
+      <div class="fail-count-badge">已尝试 ${sources.length} 个源 · 第 ${failCount} 次失败</div>
+      <div class="error-actions">${actionsHtml}</div>
     </div>`;
   isLoading = false;
+  if (searchBtn) searchBtn.style.opacity = '1';
+}
+
+// 清空搜索框并聚焦
+function clearAndFocus() {
+  const input = document.getElementById("keyword");
+  input.value = '';
+  input.focus();
+  clearFailCount(lastSearchKeyword);
+  lastSearchKeyword = '';
+  document.getElementById("list").innerHTML = `
+    <div class="status-msg">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <div>搜索你喜欢的音乐</div>
+    </div>`;
+}
+
+// ===== 强制刷新页面 + 自动搜索（绕开浏览器缓存） =====
+// 之所以需要刷新：浏览器对 API 失败的响应会缓存，即使带 cache: 'no-store'
+// 偶尔极端情况下依然命中缓存（比如 Service Worker / 代理 / DNS 缓存等），
+// 此时用 location.reload 配合唯一 URL 参数彻底绕开
+function forceReloadAndSearch() {
+  const k = document.getElementById("keyword").value.trim();
+  if (k) {
+    try { sessionStorage.setItem('pendingSearch', k); } catch(e) {}
+  }
+  // 给 URL 加一个唯一的时间戳参数，强制浏览器不走任何缓存
+  const url = new URL(window.location.href);
+  url.searchParams.set('_t', Date.now().toString());
+  window.location.replace(url.toString());
 }
 
 // ===== 渲染列表 =====
@@ -1249,7 +1530,7 @@ async function play(id, index) {
   if (!song) return;
 
   // 先显示歌曲信息（不等 URL 加载完）
-  const sourceForLyric = currentSource || sources.find(s => s.name === '备用A') || sources[0];
+  const sourceForLyric = currentSource || sources[0];
   showSong(song, sourceForLyric);
   openPlayer();
   updateMiniPlayer(song, false);
@@ -1285,7 +1566,7 @@ async function showSong(song, source) {
 
   // 歌词
   try {
-    if (!source) source = sources.find(s => s.name === '备用A') || sources[0];
+    if (!source) source = sources[0];
     const res = await fetchWithTimeout(source.lyric(song.id));
     const data = await res.json();
     const lyricText = source.parseLyric(data);
@@ -1295,15 +1576,16 @@ async function showSong(song, source) {
   }
 }
 
-// ===== 歌词解析 =====
+// ===== 歌词解析（只渲染一次） =====
 let lyricLines = [];
+let lastActiveLine = -1;
 function parseLyrics(text) {
   if (text === "暂无歌词" || !text) {
-    document.getElementById("lyrics").innerText = "暂无歌词";
+    document.getElementById("lyrics").innerHTML = '<div class="line">暂无歌词</div>';
     lyricLines = [];
+    lastActiveLine = -1;
     return;
   }
-  // 去掉时间标签，只显示纯文本
   const lines = text.split('\n').filter(l => l.trim());
   const parsed = lines.map(line => {
     const match = line.match(/\[(\d{2}):(\d{2})(?:\.(\d{2,3}))?\](.*)/);
@@ -1317,7 +1599,13 @@ function parseLyrics(text) {
   }).filter(l => l && l.text);
 
   lyricLines = parsed;
-  document.getElementById("lyrics").innerText = parsed.length ? parsed.map(l => l.text).join('\n') : "暂无歌词";
+  const lyricEl = document.getElementById("lyrics");
+  if (parsed.length) {
+    lyricEl.innerHTML = parsed.map(l => `<div class="line">${escapeHtml(l.text)}</div>`).join('');
+  } else {
+    lyricEl.innerHTML = '<div class="line">暂无歌词</div>';
+  }
+  lastActiveLine = -1;
 }
 
 // ===== 更新收藏UI =====
@@ -1535,21 +1823,20 @@ player.addEventListener("timeupdate", () => {
   document.getElementById("miniProgress").style.width = pct + "%";
   document.getElementById("currentTime").innerText = formatTime(player.currentTime);
 
-  // 歌词滚动
+  // 歌词滚动 — 只在切换行时更新 DOM
   if (lyricLines.length) {
     const current = lyricLines.findIndex((l, i) =>
       player.currentTime >= l.time && (i === lyricLines.length - 1 || player.currentTime < lyricLines[i + 1].time)
     );
-    if (current >= 0) {
+    if (current >= 0 && current !== lastActiveLine) {
+      lastActiveLine = current;
       const lyricEl = document.getElementById("lyrics");
-      const lineHeight = 33;
-      lyricEl.innerHTML = lyricLines.map((l, i) =>
-        `<div class="line ${i === current ? 'active' : ''}">${l.text}</div>`
-      ).join('');
-      // 让当前歌词居中
-      const activeLine = lyricEl.querySelector('.line.active');
-      if (activeLine) {
-        lyricEl.scrollTop = activeLine.offsetTop - lyricEl.clientHeight / 2 + activeLine.clientHeight / 2;
+      const lineEls = lyricEl.querySelectorAll('.line');
+      lineEls.forEach((el, i) => el.classList.toggle('active', i === current));
+      // 滚动让当前歌词居中
+      const activeEl = lineEls[current];
+      if (activeEl) {
+        lyricEl.scrollTop = activeEl.offsetTop - lyricEl.clientHeight / 2 + activeEl.clientHeight / 2;
       }
     }
   }
@@ -1590,6 +1877,18 @@ player.addEventListener("pause", () => {
 // 回车搜索
 document.getElementById("keyword").addEventListener("keydown", (e) => {
   if (e.key === "Enter") search();
+});
+
+// 页面加载时：如果有 pending 搜索词（来自强制刷新），自动恢复
+window.addEventListener("DOMContentLoaded", () => {
+  try {
+    const pending = sessionStorage.getItem('pendingSearch');
+    if (pending) {
+      document.getElementById("keyword").value = pending;
+      // 稍等一帧再搜索，确保 UI 完全就绪
+      setTimeout(() => search(), 100);
+    }
+  } catch(e) {}
 });
 </script>
 
